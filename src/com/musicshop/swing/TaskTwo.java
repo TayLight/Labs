@@ -30,81 +30,83 @@ public class TaskTwo extends JFrame {
 
     public TaskTwo() throws HeadlessException {
         super("Мета данные");
-        dao = new DAO();
-        md = dao.getTablesAndColumns();
-        tables=md.getTables();
-        if(tables.size()!= 0) {
-            columns = md.getColumns(0);
-            selected = tables.get(0);
-        }
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize((sizeScreen.width / 2) - 100, sizeScreen.height / 2);
-        setLocationRelativeTo(null);
-        setContentPane(panel1);
-        update();
-        setVisible(true);
-        this.addWindowListener(new WindowListener() {
-
-            public void windowActivated(WindowEvent event) {
-
+        try {
+            dao = new DAO();
+            md = dao.getTablesAndColumns();
+            tables = md.getTables();
+            if (tables.size() != 0) {
+                columns = md.getColumns(0);
+                selected = tables.get(0);
             }
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setSize((sizeScreen.width / 2) - 100, sizeScreen.height / 2);
+            setLocationRelativeTo(null);
+            setContentPane(panel1);
+            update();
+            setVisible(true);
+            this.addWindowListener(new WindowListener() {
 
-            public void windowClosed(WindowEvent event) {
-                setVisible(false);
-            }
+                public void windowActivated(WindowEvent event) {
 
-            public void windowClosing(WindowEvent event) {
-
-
-
-            }
-
-            public void windowDeactivated(WindowEvent event) {
-
-            }
-
-            public void windowDeiconified(WindowEvent event) {
-
-            }
-
-            public void windowIconified(WindowEvent event) {
-
-            }
-
-            public void windowOpened(WindowEvent event) {
-
-            }
-
-        });
-        exitButton.addActionListener(e -> {
-            this.setVisible(false);
-        });
-        listInScreen.addListSelectionListener(e -> {
-            if(!e.getValueIsAdjusting()){
-                selected = (String) listInScreen.getSelectedValue();
-                try {
-                    columns.removeAll(columns);
-                    ResultSet rs = dao.getColumns(selected);
-                    while (rs.next()){
-                        columns.add(rs.getString(4));
-                    }
-                    listColumns.setModel(new AbstractListModel() {
-                        @Override
-                        public int getSize() {
-                            return columns.size();
-                        }
-
-                        @Override
-                        public Object getElementAt(int index) {
-                            return columns.get(index);
-                        }
-                    });
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
                 }
-            }
-        });
 
+                public void windowClosed(WindowEvent event) {
+                    setVisible(false);
+                }
+
+                public void windowClosing(WindowEvent event) {
+
+
+                }
+
+                public void windowDeactivated(WindowEvent event) {
+
+                }
+
+                public void windowDeiconified(WindowEvent event) {
+
+                }
+
+                public void windowIconified(WindowEvent event) {
+
+                }
+
+                public void windowOpened(WindowEvent event) {
+
+                }
+
+            });
+            exitButton.addActionListener(e -> {
+                this.setVisible(false);
+            });
+            listInScreen.addListSelectionListener(e -> {
+                if (!e.getValueIsAdjusting()) {
+                    selected = (String) listInScreen.getSelectedValue();
+                    try {
+                        columns.removeAll(columns);
+                        ResultSet rs = dao.getColumns(selected);
+                        while (rs.next()) {
+                            columns.add(rs.getString(4));
+                        }
+                        listColumns.setModel(new AbstractListModel() {
+                            @Override
+                            public int getSize() {
+                                return columns.size();
+                            }
+
+                            @Override
+                            public Object getElementAt(int index) {
+                                return columns.get(index);
+                            }
+                        });
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(){

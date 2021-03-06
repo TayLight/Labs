@@ -74,12 +74,10 @@ public class Song {
 
     @Override
     public String toString() {
-        return "Song{" +
-                "idSong=" + idSong +
-                ", titleSong='" + titleSong + '\'' +
-                ", duration=" + duration +
-                ", idSinger=" + idSinger +
-                ", idAlbom=" + idAlbom +
-                '}';
+        return idSong +
+                ", '" + titleSong + '\'' +
+                ", " + duration +
+                ", " + idSinger +
+                ", " + idAlbom;
     }
 }

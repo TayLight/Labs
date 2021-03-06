@@ -45,10 +45,8 @@ public class Albom {
 
     @Override
     public String toString() {
-        return "Albom{" +
-                "idAlbom=" + idAlbom +
-                ", titleAlbom='" + titleAlbom + '\'' +
-                ", genre='" + genre + '\'' +
-                '}';
+        return idAlbom +
+                ", '" + titleAlbom + '\'' +
+                ", '" + genre + '\'';
     }
 }

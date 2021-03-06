@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.sql.SQLException;
 import java.util.LinkedList;
 
 public class Alboms extends JFrame {
@@ -27,89 +28,97 @@ public class Alboms extends JFrame {
 
 
     public Alboms() throws HeadlessException {
-        super("Альбомы");
-        dao = new DAO();
-        alboms = dao.getAllAlboms();
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize((sizeScreen.width / 2) - 100, sizeScreen.height / 2);
-        setLocationRelativeTo(null);
-        setContentPane(panel1);
-        update();
-        setVisible(true);
-        selected=null;
-        this.addWindowListener(new WindowListener() {
-
-            public void windowActivated(WindowEvent event) {
-
-            }
-
-            public void windowClosed(WindowEvent event) {
-                setVisible(false);
-            }
-
-            public void windowClosing(WindowEvent event) {
-
-
-
-            }
-
-            public void windowDeactivated(WindowEvent event) {
-
-            }
-
-            public void windowDeiconified(WindowEvent event) {
-
-            }
-
-            public void windowIconified(WindowEvent event) {
-
-            }
-
-            public void windowOpened(WindowEvent event) {
-
-            }
-
-        });
-        addButton.addActionListener(e -> {
-            AddAlbom addAlbom = new AddAlbom(this);
-        });
-        exitButton.addActionListener(e -> {
-            this.setVisible(false);
-        });
-        deleteButton.addActionListener(e -> {
-            if(selected != null)
-            {
-                dao.deleteSong(selected.getIdAlbom());
+            super("Альбомы");
+            try {
+                dao = new DAO();
+                alboms = dao.getAllAlboms();
+                setDefaultCloseOperation(EXIT_ON_CLOSE);
+                setSize((sizeScreen.width / 2) - 100, sizeScreen.height / 2);
+                setLocationRelativeTo(null);
+                setContentPane(panel1);
                 update();
-            }
-        });
-        changeButton.addActionListener(e -> {
-            if(selected != null)
-            {
-                ChangeAlbom changeAlbom = new ChangeAlbom(selected, this);
-            }
-        });
-        listInScreen.addListSelectionListener(e -> {
-            if(!e.getValueIsAdjusting()){
-                selected = (Albom) listInScreen.getSelectedValue();
-            }
-        });
+                setVisible(true);
+                selected = null;
+                this.addWindowListener(new WindowListener() {
 
+                    public void windowActivated(WindowEvent event) {
+
+                    }
+
+                    public void windowClosed(WindowEvent event) {
+                        setVisible(false);
+                    }
+
+                    public void windowClosing(WindowEvent event) {
+
+
+                    }
+
+                    public void windowDeactivated(WindowEvent event) {
+
+                    }
+
+                    public void windowDeiconified(WindowEvent event) {
+
+                    }
+
+                    public void windowIconified(WindowEvent event) {
+
+                    }
+
+                    public void windowOpened(WindowEvent event) {
+
+                    }
+
+                });
+                addButton.addActionListener(e -> {
+                    AddAlbom addAlbom = new AddAlbom(this);
+                });
+                exitButton.addActionListener(e -> {
+                    this.setVisible(false);
+                });
+                deleteButton.addActionListener(e -> {
+                    try {
+                        if (selected != null) {
+                            dao.deleteAlbom(selected.getIdAlbom());
+                            update();
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                changeButton.addActionListener(e -> {
+                    if (selected != null) {
+                        ChangeAlbom changeAlbom = new ChangeAlbom(selected, this);
+                    }
+                });
+                listInScreen.addListSelectionListener(e -> {
+                    if (!e.getValueIsAdjusting()) {
+                        selected = (Albom) listInScreen.getSelectedValue();
+                    }
+                });
+            } catch (Exception e){
+                e.printStackTrace();
+            }
     }
 
     public void update(){
-        alboms = dao.getAllAlboms();
-        listInScreen.setModel(new AbstractListModel() {
-            @Override
-            public int getSize() {
-                return alboms.size();
-            }
+        try {
+            alboms = dao.getAllAlboms();
+            listInScreen.setModel(new AbstractListModel() {
+                @Override
+                public int getSize() {
+                    return alboms.size();
+                }
 
-            @Override
-            public Object getElementAt(int index) {
-                return alboms.get(index);
-            }
-        });
-        listInScreen.updateUI();
+                @Override
+                public Object getElementAt(int index) {
+                    return alboms.get(index);
+                }
+            });
+            listInScreen.updateUI();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
